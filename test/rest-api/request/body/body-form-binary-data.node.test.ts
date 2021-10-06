@@ -5,6 +5,14 @@ import { setupServer } from 'msw/node'
 
 const server = setupServer(
   rest.post('http://test.example/save-image', (req, res, ctx) => {
+    const files = req.body as File
+
+    console.log(files)
+
+    // for (const it of buffer.values()) {
+    //   console.log(it)
+    //}
+
     return res(ctx.json(req.body))
   }),
 )
@@ -27,9 +35,18 @@ test('handles requests with binary content', async () => {
   const unicodeString = 'ÿØÿàJFIF' // unicode encoded start of jpeg image
   const byteArray = new Uint8Array([255, 216, 255, 224, 0, 16, 74, 70, 73, 70]) // 10 first bytes of the jpeg
 
-  const blob = new Blob([unicodeString], { type: 'image/jpeg' })
+  // In Browser
+  // const blob = new Blob([unicodeString], { type: 'image/jpeg' })
 
-  formData.append('Files', blob)
+  // In node
+  const nodeBuffer = Buffer.from(byteArray.buffer)
+  console.log(nodeBuffer.byteLength)
+
+  //formData.append('Files', nodeBuffer)
+  formData.append('ABC', 'Test')
+  formData.append('ABC1', 'Test1')
+  formData.append('ABC2', 'Test2')
+  formData.append('ABC3', nodeBuffer)
 
   const res = await fetch('http://test.example/save-image', {
     method: 'POST',
@@ -37,6 +54,7 @@ test('handles requests with binary content', async () => {
     body: formData,
   })
   const json = await res.json()
+  console.log(json)
 
   expect(res.status).toBe(200)
   expect(json).toEqual({

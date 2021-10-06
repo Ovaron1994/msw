@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <form id="save-image-form">
+      <button>Send image</button>
+    </form>
+
+    <script>
+      const form = document.getElementById('save-image-form')
+      form.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        const buffer = new ArrayBuffer(10)
+        const unicodeString = 'ÿØÿàJFIF' // unicode encoded start of jpeg image
+        const formData = new FormData()
+        const byteArray = new Uint8Array([255, 216, 255, 224, 0, 16, 74, 70, 73, 70])
+        
+        const blob = new Blob([byteArray.buffer])
+
+        formData.append('Files', blob)
+
+        fetch('/saveimage', {
+          method: 'POST',
+          body: formData,
+        })
+      })
+    </script>
+  </body>
+</html>
