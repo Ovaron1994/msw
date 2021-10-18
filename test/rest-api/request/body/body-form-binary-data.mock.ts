@@ -7,15 +7,10 @@ const worker = setupWorker(
     const file = (req.body as any).Files
     const blob = file as Blob
 
-    const receivedBuffer = await blob.text() //arrayBuffer()
-    //const values = new Uint8Array(receivedBuffer)
+    const receivedBuffer = await blob.arrayBuffer()
+    const values = new Uint8Array(receivedBuffer)
 
-    //const decodedData = decodeURIComponent(escape(receivedBuffer))
-    const encoded = Uint8Array.from(
-      [...receivedBuffer].map((ch) => ch.charCodeAt(0)),
-    )
-
-    return res(ctx.json({ values: [...encoded] }))
+    return res(ctx.json({ values: [...values] }))
   }),
 )
 
