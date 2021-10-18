@@ -81,17 +81,10 @@ export function parseMultipartData<T extends DefaultRequestMultipartBody>(
       const { contentType, filename, name } =
         parseContentHeaders(contentHeaders)
 
-      const buffer = new ArrayBuffer(contentBody.length)
-      const byteArr = new Uint8Array(buffer)
-
-      for (let it = 0; it < contentBody.length; it++) {
-        byteArr[it] = contentBody[it].charCodeAt(0)
-      }
-
       const value =
         filename === undefined
           ? contentBody
-          : new File([byteArr], filename, { type: contentType })
+          : new File([contentBody], filename, { type: contentType })
 
       const parsedValue = parsedBody[name]
 

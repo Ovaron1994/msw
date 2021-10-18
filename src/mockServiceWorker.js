@@ -138,11 +138,6 @@ async function handleRequest(event, requestId) {
   return response
 }
 
-function encode_utf8( s )
-{
-  return unescape(encodeURIComponent(s))
-}
-
 async function getResponse(event, client, requestId) {
   const { request } = event
   const requestClone = request.clone()
@@ -177,14 +172,7 @@ async function getResponse(event, client, requestId) {
 
   // Send the request to the client-side MSW.
   const reqHeaders = serializeHeaders(request.headers)
-
-
-  // Original code 
-  // const body = await request.text()
-
-  // Code which fix it
-  let unEncodedBody = String.fromCharCode(...new Uint8Array(await request.arrayBuffer()))
-  const body = encode_utf8(unEncodedBody);
+  const body = await request.text()
 
   const clientMessage = await sendToClient(client, {
     type: 'REQUEST',
